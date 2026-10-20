@@ -37,6 +37,7 @@ services:
     environment:
       ENABLE_OLLAMA_API: 'false'
       ENABLE_OPENAI_API: 'true'
+      ENABLE_FOLLOW_UP_GENERATION: 'false'
       OPENAI_API_BASE_URLS: "http://hermes:8642/v1;http://${SPARK_IP}:${SPARK_PORT:-8000}/v1"
       OPENAI_API_KEYS: "${API_SERVER_KEY:?Vul API_SERVER_KEY in .env in};${SPARK_API_KEY:-local-no-key}"
       OPENAI_API_CONFIGS: >-
