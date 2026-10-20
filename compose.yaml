@@ -1,35 +1,24 @@
 services:
-  init:
-    image: nousresearch/hermes-agent:latest
-    user: '0:0'
-    entrypoint: [python3, /bootstrap/init.py]
-    environment:
-      SPARK_IP: ${SPARK_IP:?Vul SPARK_IP in .env in}
-      SPARK_PORT: ${SPARK_PORT:-8000}
-      SPARK_API_KEY: ${SPARK_API_KEY:-}
-      SPARK_MODEL: ${SPARK_MODEL:-}
-      SPARK_CONTEXT: ${SPARK_CONTEXT:-}
-    volumes:
-      - ./init.py:/bootstrap/init.py:ro
-      - hermes-data:/opt/data
-      - web-config:/web-config
-    restart: 'no'
-
   hermes:
     image: nousresearch/hermes-agent:latest
     command: [gateway, run]
     restart: unless-stopped
-    depends_on:
-      init:
-        condition: service_completed_successfully
     environment:
       HERMES_HOME: /opt/data
+      SPARK_IP: ${SPARK_IP:?Vul SPARK_IP in .env in}
+      SPARK_PORT: ${SPARK_PORT:-8000}
+      SPARK_API_KEY: ${SPARK_API_KEY:-local-no-key}
+      SPARK_MODEL: ${SPARK_MODEL:?Vul SPARK_MODEL in .env in}
       API_SERVER_ENABLED: 'true'
       API_SERVER_HOST: 0.0.0.0
       API_SERVER_PORT: '8642'
       API_SERVER_MODEL_NAME: hermes-agent
+      API_SERVER_KEY: ${API_SERVER_KEY:?Vul API_SERVER_KEY in .env in}
     volumes:
       - hermes-data:/opt/data
+      - ./.env:/opt/data/.env
+      - ./config.yaml:/opt/data/config.yaml
+      - ./workspace:/opt/data/workspace
     healthcheck:
       test: [CMD, python3, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8642/health', timeout=5)"]
       interval: 15s
@@ -48,18 +37,16 @@ services:
     environment:
       ENABLE_OLLAMA_API: 'false'
       ENABLE_OPENAI_API: 'true'
-      OPENAI_API_BASE_URL: http://hermes:8642/v1
+      OPENAI_API_BASE_URLS: "http://hermes:8642/v1;http://${SPARK_IP}:${SPARK_PORT:-8000}/v1"
+      OPENAI_API_KEYS: "${API_SERVER_KEY:?Vul API_SERVER_KEY in .env in};${SPARK_API_KEY:-local-no-key}"
+      OPENAI_API_CONFIGS: >-
+        {"0":{"enable":true,"model_ids":["hermes-agent"]},"1":{"enable":true,"model_ids":["${SPARK_MODEL}"]}}
       ENABLE_PERSISTENT_CONFIG: 'false'
       WEBUI_AUTH: 'true'
       DEFAULT_MODELS: hermes-agent
-    entrypoint: [/bin/bash, -c]
-    command:
-      - 'export OPENAI_API_KEY="$$(cat /web-config/hermes.key)"; exec bash start.sh'
     volumes:
       - openwebui-data:/app/backend/data
-      - web-config:/web-config:ro
 
 volumes:
   hermes-data:
   openwebui-data:
-  web-config:

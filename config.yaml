@@ -1,0 +1,16 @@
+model:
+  default: "${SPARK_MODEL}"
+  provider: custom
+  base_url: "http://${SPARK_IP}:${SPARK_PORT}/v1"
+  api_key: "${SPARK_API_KEY}"
+  context_length: 65536
+
+terminal:
+  backend: local
+  cwd: /opt/data/workspace
+
+auxiliary:
+  compression:
+    provider: main
+    timeout: 300
+_config_version: 50
