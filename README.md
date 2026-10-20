@@ -32,4 +32,4 @@ flowchart LR
 
 3. Open http://localhost:3000, maak een account aan en kies `hermes-agent` of `gpt-oss-120b`.
 
-Compose maakt `workspace/` aan als die ontbreekt en koppelt de map aan Hermes. Git negeert alle inhoud van deze map.
+Compose maakt `workspace/` aan als die ontbreekt en koppelt de map aan Hermes. Git negeert alle inhoud van deze map. Alleen deze map is toegankelijk voor Hermes, zodat Hermes geïsoleerd draait.
