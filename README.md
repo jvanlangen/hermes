@@ -23,9 +23,10 @@ flowchart LR
 
 ## Starten
 
-1. Installeer Docker Desktop en clone deze repo.
-2. Kopieer `.env.example` naar `.env`. Gebruik in PowerShell `Copy-Item .env.example .env` (of `cp .env.example .env` op macOS/Linux).
-3. Pas `.env` aan: vul `SPARK_IP` in en vervang `API_SERVER_KEY` door een lang, willekeurig geheim.
+1. Zorg dat Docker Desktop geinstalleerd is
+2. Clone deze repository naar een folder op je computer.
+2. Kopieer `.env.example` naar `.env`.
+3. Pas `.env` aan: vervang `API_SERVER_KEY` door een lang, willekeurig geheim.
 4. Open PowerShell in de projectmap en start de containers:
 
    ```powershell
