@@ -1,6 +1,7 @@
 services:
   hermes:
-    image: nousresearch/hermes-agent:latest
+    # Opnieuw bouwen en starten: docker compose build hermes; docker compose up -d hermes
+    build: .
     command: [gateway, run]
     restart: unless-stopped
     environment:
@@ -14,8 +15,8 @@ services:
       API_SERVER_PORT: "8642"
       API_SERVER_MODEL_NAME: hermes-agent
       API_SERVER_KEY: ${API_SERVER_KEY:?Vul API_SERVER_KEY in .env in}
-      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Vul TELEGRAM_BOT_TOKEN in .env in}
-      TELEGRAM_ALLOWED_USERS: ${TELEGRAM_ALLOWED_USERS:?Vul TELEGRAM_ALLOWED_USERS in .env in}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_ALLOWED_USERS: ${TELEGRAM_ALLOWED_USERS:-}
     volumes:
       - hermes-data:/opt/data
       - ./.env:/opt/data/.env
